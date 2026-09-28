@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Restaurant Ordering App
 
-## Getting Started
+A Next.js App Router foundation for a restaurant online ordering and order management application.
 
-First, run the development server:
+## Getting started
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to browse the restaurant menu.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Run the checks with:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint
+npm run build
+```
 
-## Learn More
+## Project structure
 
-To learn more about Next.js, take a look at the following resources:
+Application routes and the root layout live in `src/app`. Shared page chrome is in
+`src/components/layout`; reusable menu, cart, and checkout components are in
+their respective folders, while `ui` and `admin` reserve boundaries for future
+work. `src/data` contains application data, `src/types` contains domain
+types, and `src/store` contains client state. `src/lib` holds shared API,
+calculation, and validation helpers.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The homepage presents a customer-facing menu backed by `GET /api/menu`.
+Search is debounced and category/search filters are sent to the API. The
+shopping cart uses Zustand with localStorage persistence. Checkout validates
+customer details and submits cart item IDs and quantities to `POST /api/orders`;
+the server reconstructs item details and calculates totals. Cart data is
+restored after hydration to keep server-rendered markup consistent with the
+browser's persisted state. Admin interfaces are not implemented.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## API and mock persistence
 
-## Deploy on Vercel
+Route handlers are in `src/app/api`. They use shared request/response helpers
+and order business logic in `src/lib/api`, with the mock data source and access
+functions in `src/data` and `src/lib/data-access.ts`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Orders created or updated through the API are stored in process memory only.
+They are temporary: restarting the server clears changes, and serverless
+platforms such as Vercel may handle requests in different instances that do not
+share memory. This mock persistence is for assessment and local development;
+it is not durable storage.
