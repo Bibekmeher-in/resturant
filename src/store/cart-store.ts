@@ -47,7 +47,10 @@ function restoreCartItems(value: unknown): CartItem[] {
 type CartState = {
   items: CartItem[];
   hasHydrated: boolean;
+  isCartOpen: boolean;
   addItem: (item: MenuItem) => void;
+  openCart: () => void;
+  closeCart: () => void;
   removeItem: (menuItemId: number) => void;
   increaseQuantity: (menuItemId: number) => void;
   decreaseQuantity: (menuItemId: number) => void;
@@ -60,6 +63,9 @@ export const useCartStore = create<CartState>()(
     (set) => ({
       items: [],
       hasHydrated: false,
+      isCartOpen: false,
+      openCart: () => set({ isCartOpen: true }),
+      closeCart: () => set({ isCartOpen: false }),
       addItem: (menuItem) => {
         if (!menuItem.available) return;
 

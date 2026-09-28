@@ -1,14 +1,11 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import { CartDrawer } from "@/components/cart/cart-drawer";
 import { selectCartItemCount, useCartStore } from "@/store/cart-store";
 
 export function CartButton() {
   const itemCount = useCartStore(selectCartItemCount);
   const hasHydrated = useCartStore((state) => state.hasHydrated);
-  const [isOpen, setIsOpen] = useState(false);
-  const closeCart = useCallback(() => setIsOpen(false), []);
+  const openCart = useCartStore((state) => state.openCart);
 
   return (
     <>
@@ -19,7 +16,7 @@ export function CartButton() {
             : "Cart is restoring"
         }
         className="relative inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-stone-300 bg-white px-4 text-sm font-semibold text-stone-900 shadow-sm transition hover:border-stone-400 hover:bg-stone-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-700 disabled:cursor-wait disabled:opacity-60"
-        onClick={() => setIsOpen(true)}
+        onClick={openCart}
         disabled={!hasHydrated}
         type="button"
       >
@@ -44,7 +41,6 @@ export function CartButton() {
           {hasHydrated ? itemCount : "–"}
         </span>
       </button>
-      {isOpen && <CartDrawer onClose={closeCart} />}
     </>
   );
 }

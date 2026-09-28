@@ -28,6 +28,7 @@ export function MenuPage() {
   const [cartNotice, setCartNotice] = useState("");
   const lastSuccessfulQuery = useRef<string | null>(null);
   const addItem = useCartStore((state) => state.addItem);
+  const openCart = useCartStore((state) => state.openCart);
   const cartHydrated = useCartStore((state) => state.hasHydrated);
 
   useEffect(() => {
@@ -97,8 +98,9 @@ export function MenuPage() {
   const handleAddToCart = useCallback((item: MenuItem) => {
     if (!item.available || !cartHydrated) return;
     addItem(item);
+    openCart();
     setCartNotice(`${item.name} added to your cart.`);
-  }, [addItem, cartHydrated]);
+  }, [addItem, cartHydrated, openCart]);
 
   const hasFilters =
     selectedCategory !== "All" || debouncedSearch.length > 0 || search.length > 0;

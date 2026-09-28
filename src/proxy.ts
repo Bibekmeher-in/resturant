@@ -33,7 +33,6 @@ export function proxy(request: NextRequest): NextResponse {
 export const config = {
   matcher: [
     "/admin/orders/:path*",
-    "/admin/dashboard",
     "/api/orders",
     "/api/orders/:path*",
   ],

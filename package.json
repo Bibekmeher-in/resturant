@@ -6,7 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "pretypecheck": "next typegen",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": "22.x"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
