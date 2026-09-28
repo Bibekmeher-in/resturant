@@ -28,3 +28,8 @@ export type Order = {
   total: number;
   createdAt: string;
 };
+
+export type OrderReceipt = Pick<
+  Order,
+  "id" | "items" | "status" | "subtotal" | "tax" | "total" | "createdAt"
+>;

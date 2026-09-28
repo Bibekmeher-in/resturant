@@ -11,7 +11,13 @@ import {
   getOrderById,
   updateOrderStatus,
 } from "@/lib/data-access";
-import { ORDER_STATUSES, type Order, type OrderItem, type OrderStatus } from "@/types";
+import {
+  ORDER_STATUSES,
+  type Order,
+  type OrderItem,
+  type OrderReceipt,
+  type OrderStatus,
+} from "@/types";
 
 function isOrderStatus(value: unknown): value is OrderStatus {
   return (
@@ -71,6 +77,24 @@ export function createOrder(value: unknown): Order {
 
   addOrder(order);
   return order;
+}
+
+export function getOrderReceipt(id: string): OrderReceipt | undefined {
+  const order = getOrderById(id);
+
+  if (!order) {
+    return undefined;
+  }
+
+  return {
+    id: order.id,
+    items: order.items,
+    status: order.status,
+    subtotal: order.subtotal,
+    tax: order.tax,
+    total: order.total,
+    createdAt: order.createdAt,
+  };
 }
 
 export function changeOrderStatus(

@@ -3,11 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { fetchOrder, OrdersApiError } from "@/lib/api/order-client";
+import { fetchOrderReceipt, OrdersApiError } from "@/lib/api/order-client";
 import { formatCurrency } from "@/lib/calculations/order-totals";
 import { formatDateTime } from "@/lib/formatters/date-time";
 import { OrderStatusBadge } from "@/components/ui/order-status-badge";
-import type { Order } from "@/types";
+import type { OrderReceipt } from "@/types";
 import { OrderSuccessLoading } from "@/components/order-success/order-success-loading";
 
 type OrderConfirmationProps = {
@@ -15,7 +15,7 @@ type OrderConfirmationProps = {
 };
 
 export function OrderConfirmation({ orderId }: OrderConfirmationProps) {
-  const [order, setOrder] = useState<Order | null>(null);
+  const [order, setOrder] = useState<OrderReceipt | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [retryCount, setRetryCount] = useState(0);
@@ -23,7 +23,7 @@ export function OrderConfirmation({ orderId }: OrderConfirmationProps) {
   useEffect(() => {
     const controller = new AbortController();
 
-    fetchOrder(orderId, controller.signal)
+    fetchOrderReceipt(orderId, controller.signal)
       .then(setOrder)
       .catch((error: unknown) => {
         if (controller.signal.aborted) {
@@ -167,7 +167,7 @@ export function OrderConfirmation({ orderId }: OrderConfirmationProps) {
           </p>
         </header>
 
-        <div className="mt-6 grid items-start gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(18rem,0.8fr)]">
+        <div className="mt-6">
           <section
             aria-labelledby="order-summary-heading"
             className="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm sm:p-7"
@@ -235,53 +235,7 @@ export function OrderConfirmation({ orderId }: OrderConfirmationProps) {
                 <dd>{formatCurrency(order.total)}</dd>
               </div>
             </dl>
-          </section>
-
-          <section
-            aria-labelledby="customer-information-heading"
-            className="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm sm:p-7"
-          >
-            <h2
-              className="text-xl font-semibold text-stone-950"
-              id="customer-information-heading"
-            >
-              Delivery details
-            </h2>
-            <dl className="mt-5 space-y-5">
-              <div>
-                <dt className="text-xs font-bold uppercase tracking-wide text-stone-500">
-                  Customer
-                </dt>
-                <dd className="mt-1 break-words text-sm font-medium text-stone-900">
-                  {order.customerName}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-xs font-bold uppercase tracking-wide text-stone-500">
-                  Mobile number
-                </dt>
-                <dd className="mt-1 break-words text-sm font-medium text-stone-900">
-                  {order.mobile}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-xs font-bold uppercase tracking-wide text-stone-500">
-                  Email
-                </dt>
-                <dd className="mt-1 break-all text-sm font-medium text-stone-900">
-                  {order.email}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-xs font-bold uppercase tracking-wide text-stone-500">
-                  Delivery address
-                </dt>
-                <dd className="mt-1 break-words text-sm leading-6 text-stone-900">
-                  {order.address}
-                </dd>
-              </div>
-            </dl>
-          </section>
+            </section>
         </div>
 
         <div className="mt-7 flex justify-center">

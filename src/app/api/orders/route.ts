@@ -6,6 +6,7 @@ import {
 } from "@/lib/api/http";
 import { createOrder } from "@/lib/api/order-service";
 import { getOrders } from "@/lib/data-access";
+import { hasAdminSession } from "@/lib/auth/admin-session";
 import { ORDER_STATUSES, type OrderStatus } from "@/types";
 
 function isOrderStatus(value: string): value is OrderStatus {
@@ -13,7 +14,11 @@ function isOrderStatus(value: string): value is OrderStatus {
 }
 
 export function GET(request: Request): Promise<Response> {
-  return handleApiRequest(() => {
+  return handleApiRequest(async () => {
+    if (!(await hasAdminSession())) {
+      throw new ApiError("Authentication required", 401);
+    }
+
     const status = new URL(request.url).searchParams.get("status");
 
     if (status !== null && !isOrderStatus(status)) {

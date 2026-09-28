@@ -1,5 +1,10 @@
-import { type Order, type OrderStatus } from "@/types";
-import { isOrder, isOrderList, isRecord } from "@/lib/api/order-guards";
+import { type Order, type OrderReceipt, type OrderStatus } from "@/types";
+import {
+  isOrder,
+  isOrderList,
+  isOrderReceipt,
+  isRecord,
+} from "@/lib/api/order-guards";
 
 type ApiSuccess<T> = {
   success: true;
@@ -101,6 +106,17 @@ export function fetchOrder(
     `/api/orders/${encodeURIComponent(id)}`,
     { signal },
     isOrder,
+  );
+}
+
+export function fetchOrderReceipt(
+  id: string,
+  signal?: AbortSignal,
+): Promise<OrderReceipt> {
+  return requestOrderApi(
+    `/api/order-confirmations/${encodeURIComponent(id)}`,
+    { signal },
+    isOrderReceipt,
   );
 }
 
